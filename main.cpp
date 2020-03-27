@@ -11,8 +11,8 @@ using std::sort;
 using std::string;
 using std::vector;
 // typedef std::pair<int,int> Point;
-enum class State {kEmpty, kObstacle, kClosed, kPath, kStart, kFinish};
 
+enum class State { kEmpty, kObstacle, kClosed, kPath, kStart, kFinish };
 struct Point {
   int x;
   int y;
@@ -24,12 +24,17 @@ struct Node {
 };
 
 string CellString(State cell) {
-  switch(cell) {
-    case State::kObstacle: return "⛰️   ";
-    case State::kPath: return "🚗   ";
-    case State::kStart: return "🚦   ";
-    case State::kFinish: return "🏁   ";
-    default: return "0   "; 
+  switch (cell) {
+  case State::kObstacle:
+    return "⛰️   ";
+  case State::kPath:
+    return "🚗   ";
+  case State::kStart:
+    return "🚦   ";
+  case State::kFinish:
+    return "🏁   ";
+  default:
+    return "0   ";
   }
 }
 
@@ -89,19 +94,19 @@ bool CheckValidCell(Point p, vector<vector<State>> &grid) {
   return false;
 }
 
-void ExpandNeighbors(Node n, vector<Node> &open, vector<vector<State>> &board, Point goal){
+void ExpandNeighbors(Node n, vector<Node> &open, vector<vector<State>> &board,
+                     Point goal) {
   int x = n.location.x;
   int y = n.location.y;
   int g = n.g;
   int h = n.h;
   const int delta[4][2]{{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
-  for (size_t i = 0; i < 4; i++)
-  {
+  for (size_t i = 0; i < 4; i++) {
     Point pn;
     pn.x = x + delta[i][0];
     pn.y = y + delta[i][1];
     bool valid = CheckValidCell(pn, board);
-    if(valid){
+    if (valid) {
       Node Nn;
       Nn.location = pn;
       Nn.g = g + 1;
@@ -109,7 +114,6 @@ void ExpandNeighbors(Node n, vector<Node> &open, vector<vector<State>> &board, P
       AddToOpen(Nn, open, board);
     }
   }
-  
 }
 
 vector<vector<State>> Search(vector<vector<State>> board, Point start,
@@ -132,7 +136,7 @@ vector<vector<State>> Search(vector<vector<State>> board, Point start,
       board[start.x][start.y] = State::kStart;
       board[goal.x][goal.y] = State::kFinish;
       return board;
-    }else{
+    } else {
       ExpandNeighbors(current, open, board, goal);
     }
   }
@@ -144,10 +148,11 @@ vector<vector<State>> Search(vector<vector<State>> board, Point start,
 int main() {
 
   vector<vector<State>> board = ReadBoardFile("files/1.board");
-  
+  PrintBoard(board);
   Point init{0, 0};
   Point goal{4, 5};
   auto solution = Search(board, init, goal);
+  cout << "<------------------- Solution -------------------->\n";
   PrintBoard(solution);
   return 0;
 }
